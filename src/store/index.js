@@ -78,7 +78,7 @@ export default new Vuex.Store({
         if (TotalCountTime === 0) {
           state.StopToCount = true
         }
-      }, 50)
+      }, 1000)
     },
     StopToCount (state) {
       state.StopToCount = true

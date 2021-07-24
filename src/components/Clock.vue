@@ -8,14 +8,13 @@
           {{ TargetIndex }}
           <div class="d-flex justify-content-center">
             <div class="sm-progress mr-1 rounded" style="width:33px; height: 12px; border: 1px solid #D6827B;" v-for="(item, index) in currentTodo.tomato" :key="index">
-              <!--<div class="sm-ptogress-content bg-primary h-100" :style="{width: `${sm_percent}%`}"></div>-->
               <div class="sm-ptogress-content bg-primary h-100" :style="{width: `${item.width}%`}"></div>
             </div>
           </div>
         </section>
         <section class="clock_area">
-          <div class="mb-0 clock_section">
-            <p class="clock_time clock_time mb-0">
+          <div class="mb-0 clock_section" v-if="!timeToshowCongrat">
+            <p class="clock_time mb-0">
               {{ TimeProgress }}
             </p>
             <div class="clock_option" :class="{'active':isPlay}">
@@ -23,9 +22,24 @@
               <font-awesome-icon :icon="['far', 'pause-circle']" class="clock_play pause_option" @click="stopToCount"></font-awesome-icon>
             </div>
           </div>
+          <div class="mb-0 finished_slogan" v-else>
+            <p class="mb-0">
+              Well Done!
+            </p>
+            <small>
+              Congratulation!
+            </small>
+          </div>
           <figure class="clock">
             <svg class="progress-ring" height="420" width="420">
-              <circle r="200" cx="210" cy="210" fill="transparent" stroke-width="15" stroke-dasharray="1256" stroke-dashoffset="0" stroke="white"></circle>
+              <defs>
+                <linearGradient id="linear" x1="100%" y1="100%" x2="50%" y2="0%">
+                  <stop offset="0%"   stop-color="#6CBBDA"/>
+                  <stop offset="52%" stop-color="#C88AB3"/>
+                  <stop offset="100%" stop-color="#E9827D"/>
+                </linearGradient>
+              </defs>
+              <circle r="200" cx="210" cy="210" fill="transparent" stroke-width="15" stroke-dasharray="1256" stroke-dashoffset="0" :stroke="finishedBarShow"></circle>
               <circle r="200" cx="210" cy="210" fill="transparent" stroke-width="15" class="progress-ring__circle" :style="{ strokeDashoffset: percent }"></circle>
             </svg>
           </figure>
@@ -68,14 +82,15 @@ export default {
   data () {
     return {
       ProgressTotal: 0,
-      // isPlay: false,
       newThing: '',
       currentTodo: {},
-      TargetIndex: 0
+      TargetIndex: 0,
+      timeToshowCongrat: false
     }
   },
   methods: {
     startToCount () {
+      this.timeToshowCongrat = false
       this.$store.state.StopToCount = false
       this.$store.commit('CHANGE_ISPLAY', true)
       this.$store.dispatch('StartToCount')
@@ -103,7 +118,7 @@ export default {
       }
       const name = this.newThing
       const tomato = []
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 2; i++) {
         tomato.push({ percent: 100, width: 0 })
       }
       this.$store.dispatch('AddTodo', { name, tomato })
@@ -132,6 +147,13 @@ export default {
     },
     TodoMission () {
       return this.$store.state.Todolist
+    },
+    finishedBarShow () {
+      if (this.timeToshowCongrat) {
+        return 'url(#linear)'
+      } else {
+        return 'white'
+      }
     }
   },
   mounted () {
@@ -153,10 +175,13 @@ export default {
               this.$store.state.Progresspercent = 0
               this.$store.commit('CHANGE_ISPLAY', false)
               this.$store.commit('StopToCount')
+              if (this.TargetIndex === this.currentTodo.tomato.length) {
+                vm.timeToshowCongrat = true
+              }
               setTimeout(function () {
                 vm.$store.dispatch('Reset')
                 vm.$store.commit('RESET_ACCUMULATE_COUNTTIME')
-              }, 1500)
+              }, 500)
             }
           }
         })
@@ -169,11 +194,6 @@ export default {
 <style scoped lang="scss">
   .add_btn:hover {
     cursor: pointer;
-  }
-  .clock {
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
   .progress-ring__circle {
     transition: 0.5s;
@@ -245,5 +265,21 @@ export default {
   }
   .progress-finished {
     width: 100%;
+  }
+  .finished_slogan {
+    position:absolute;
+    top:35%;
+    left: 18%;
+    & > p {
+      font-size: 60px;
+      font-weight: 600;
+      background: linear-gradient(270deg, #6CBBDA 0%, #C88AB3 52%, #E9827D 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    & > small {
+      font-size: 14px;
+      font-style: italic;
+    }
   }
 </style>
