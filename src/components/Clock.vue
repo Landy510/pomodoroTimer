@@ -68,7 +68,7 @@ export default {
   data () {
     return {
       ProgressTotal: 0,
-      isPlay: false,
+      // isPlay: false,
       newThing: '',
       currentTodo: {},
       TargetIndex: 0
@@ -77,7 +77,7 @@ export default {
   methods: {
     startToCount () {
       this.$store.state.StopToCount = false
-      this.isPlay = true
+      this.$store.commit('CHANGE_ISPLAY', true)
       this.$store.dispatch('StartToCount')
     },
     SettotalTime (e) {
@@ -93,7 +93,7 @@ export default {
       }
     },
     stopToCount () {
-      this.isPlay = false
+      this.$store.commit('CHANGE_ISPLAY', false)
       this.$store.dispatch('StopToCount')
     },
     AddTodo () {
@@ -127,9 +127,9 @@ export default {
       const offset = this.ProgressTotal - this.$store.state.Progresspercent * this.ProgressTotal
       return offset
     },
-    // sm_percent () {
-    //   return this.$store.state.Progresspercent * 100
-    // },
+    isPlay () {
+      return this.$store.state.isPlay
+    },
     TodoMission () {
       return this.$store.state.Todolist
     }
@@ -151,6 +151,7 @@ export default {
             if (item.width === 100) {
               this.TargetIndex++
               this.$store.state.Progresspercent = 0
+              this.$store.commit('CHANGE_ISPLAY', false)
               setTimeout(function () {
                 vm.$store.dispatch('Reset')
               }, 1500)

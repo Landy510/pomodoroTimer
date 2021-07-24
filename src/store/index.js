@@ -8,7 +8,8 @@ export default new Vuex.Store({
     TotalTime: 0,
     Progresspercent: 0,
     CountTime: 0,
-    StopToCount: false
+    StopToCount: false,
+    isPlay: false
   },
   actions: {
     StartToCount (context) {
@@ -81,6 +82,9 @@ export default new Vuex.Store({
     },
     StopToCount (state) {
       state.StopToCount = true
+    },
+    CHANGE_ISPLAY (state, flag) {
+      state.isPlay = flag
     },
     Reset (state) {
       state.StopToCount = true
