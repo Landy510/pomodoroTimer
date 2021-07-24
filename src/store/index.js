@@ -26,7 +26,7 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    StartToCount (state, context) {
+    StartToCount (state) {
       const wordNum = state.RightNowTime.indexOf(':', 0)
       const Minute = Number(state.RightNowTime.substr(0, wordNum)) * 60
       const Second = Number(state.RightNowTime.substr(wordNum + 1, state.RightNowTime.length))
@@ -78,7 +78,7 @@ export default new Vuex.Store({
         if (TotalCountTime === 0) {
           state.StopToCount = true
         }
-      }, 100)
+      }, 50)
     },
     StopToCount (state) {
       state.StopToCount = true
@@ -86,15 +86,16 @@ export default new Vuex.Store({
     CHANGE_ISPLAY (state, flag) {
       state.isPlay = flag
     },
+    RESET_ACCUMULATE_COUNTTIME (state) {
+      state.CountTime = 0
+    },
     Reset (state) {
-      state.StopToCount = true
       let MinAdd = false
       let SecAdd = false
       const strIndex = JSON.parse(localStorage.getItem('SettingTime')).indexOf(':', 0)
       const TotalMinute = Number(JSON.parse(localStorage.getItem('SettingTime')).substr(0, strIndex)) * 60
       const TotalSecond = Number(JSON.parse(localStorage.getItem('SettingTime')).substr(strIndex + 1, JSON.parse(localStorage.getItem('SettingTime')).length))
       state.TotalTime = TotalMinute + TotalSecond
-      console.log('重新時間', state.TotalTime)
       if (state.TotalTime % 60 <= 9) SecAdd = true
       else SecAdd = false
       if (parseInt(state.TotalTime / 60) <= 9) MinAdd = true

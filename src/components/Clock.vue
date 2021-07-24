@@ -152,8 +152,10 @@ export default {
               this.TargetIndex++
               this.$store.state.Progresspercent = 0
               this.$store.commit('CHANGE_ISPLAY', false)
+              this.$store.commit('StopToCount')
               setTimeout(function () {
                 vm.$store.dispatch('Reset')
+                vm.$store.commit('RESET_ACCUMULATE_COUNTTIME')
               }, 1500)
             }
           }
