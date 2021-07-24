@@ -1,0 +1,13 @@
+@import "~bootstrap/scss/functions";
+@import './variables';
+@import '~bootstrap/scss/bootstrap.scss';
+html, body {
+  background-color: #FAFAFA;
+}
+.font-medium {
+  font-size: 28px;
+  color: black;
+}
+.active-option {
+  color: #D6827B;
+}
