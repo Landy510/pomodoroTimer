@@ -12,21 +12,8 @@ export default new Vuex.Store({
     isPlay: false
   },
   actions: {
-    StartToCount (context) {
-      context.commit('StartToCount')
-    },
-    StopToCount (context) {
-      context.commit('StopToCount')
-    },
-    Reset (context) {
-      context.commit('Reset')
-    },
-    AddTodo (context, { name, tomato }) {
-      context.commit('AddTodo', { name, tomato })
-    }
-  },
-  mutations: {
-    StartToCount (state) {
+    StartToCount ({ commit, state }) {
+      // context.commit('StartToCount')
       const wordNum = state.RightNowTime.indexOf(':', 0)
       const Minute = Number(state.RightNowTime.substr(0, wordNum)) * 60
       const Second = Number(state.RightNowTime.substr(wordNum + 1, state.RightNowTime.length))
@@ -36,20 +23,25 @@ export default new Vuex.Store({
       const strIndex = JSON.parse(localStorage.getItem('SettingTime')).indexOf(':', 0)
       const TotalMinute = Number(JSON.parse(localStorage.getItem('SettingTime')).substr(0, strIndex)) * 60
       const TotalSecond = Number(JSON.parse(localStorage.getItem('SettingTime')).substr(strIndex + 1, JSON.parse(localStorage.getItem('SettingTime')).length))
-      state.TotalTime = TotalMinute + TotalSecond
+      // state.TotalTime = TotalMinute + TotalSecond
+      commit('SETTOTALTIME', TotalMinute + TotalSecond)
       const timeoutID = setInterval(function () {
         if (state.StopToCount) {
           if (SecAdd) {
             if (MinAdd) {
-              state.RightNowTime = '0' + parseInt(TotalCountTime / 60).toString() + ':' + '0' + (TotalCountTime % 60).toString()
+              const temp = '0' + parseInt(TotalCountTime / 60).toString() + ':' + '0' + (TotalCountTime % 60).toString()
+              commit('SETRIGHTTIME', temp)
             } else {
-              state.RightNowTime = parseInt(TotalCountTime / 60).toString() + ':' + '0' + (TotalCountTime % 60).toString()
+              const temp = parseInt(TotalCountTime / 60).toString() + ':' + '0' + (TotalCountTime % 60).toString()
+              commit('SETRIGHTTIME', temp)
             }
           } else {
             if (MinAdd) {
-              state.RightNowTime = '0' + parseInt(TotalCountTime / 60).toString() + ':' + (TotalCountTime % 60).toString()
+              const temp = '0' + parseInt(TotalCountTime / 60).toString() + ':' + (TotalCountTime % 60).toString()
+              commit('SETRIGHTTIME', temp)
             } else {
-              state.RightNowTime = parseInt(TotalCountTime / 60).toString() + ':' + (TotalCountTime % 60).toString()
+              const temp = parseInt(TotalCountTime / 60).toString() + ':' + (TotalCountTime % 60).toString()
+              commit('SETRIGHTTIME', temp)
             }
           }
           clearInterval(timeoutID)
@@ -78,8 +70,79 @@ export default new Vuex.Store({
         if (TotalCountTime === 0) {
           state.StopToCount = true
         }
-      }, 1000)
+      }, 100)
     },
+    StopToCount (context) {
+      context.commit('StopToCount')
+    },
+    Reset (context) {
+      context.commit('Reset')
+    },
+    AddTodo (context, { name, tomato }) {
+      context.commit('AddTodo', { name, tomato })
+    }
+  },
+  mutations: {
+    SETTOTALTIME (state, toalTime) {
+      state.TotalTime = toalTime
+    },
+    SETRIGHTTIME (state, rightTime) {
+      state.RightNowTime = rightTime
+    },
+    // StartToCount (state) {
+    //   const wordNum = state.RightNowTime.indexOf(':', 0)
+    //   const Minute = Number(state.RightNowTime.substr(0, wordNum)) * 60
+    //   const Second = Number(state.RightNowTime.substr(wordNum + 1, state.RightNowTime.length))
+    //   let MinAdd = false
+    //   let SecAdd = false
+    //   let TotalCountTime = Minute + Second
+    //   const strIndex = JSON.parse(localStorage.getItem('SettingTime')).indexOf(':', 0)
+    //   const TotalMinute = Number(JSON.parse(localStorage.getItem('SettingTime')).substr(0, strIndex)) * 60
+    //   const TotalSecond = Number(JSON.parse(localStorage.getItem('SettingTime')).substr(strIndex + 1, JSON.parse(localStorage.getItem('SettingTime')).length))
+    //   state.TotalTime = TotalMinute + TotalSecond
+    //   const timeoutID = setInterval(function () {
+    //     if (state.StopToCount) {
+    //       if (SecAdd) {
+    //         if (MinAdd) {
+    //           state.RightNowTime = '0' + parseInt(TotalCountTime / 60).toString() + ':' + '0' + (TotalCountTime % 60).toString()
+    //         } else {
+    //           state.RightNowTime = parseInt(TotalCountTime / 60).toString() + ':' + '0' + (TotalCountTime % 60).toString()
+    //         }
+    //       } else {
+    //         if (MinAdd) {
+    //           state.RightNowTime = '0' + parseInt(TotalCountTime / 60).toString() + ':' + (TotalCountTime % 60).toString()
+    //         } else {
+    //           state.RightNowTime = parseInt(TotalCountTime / 60).toString() + ':' + (TotalCountTime % 60).toString()
+    //         }
+    //       }
+    //       clearInterval(timeoutID)
+    //       return
+    //     }
+    //     TotalCountTime = TotalCountTime - 1
+    //     state.CountTime += 1
+    //     state.Progresspercent = state.CountTime / state.TotalTime
+    //     if (TotalCountTime % 60 <= 9) SecAdd = true
+    //     else SecAdd = false
+    //     if (parseInt(TotalCountTime / 60) <= 9) MinAdd = true
+    //     else MinAdd = false
+    //     if (SecAdd) {
+    //       if (MinAdd) {
+    //         state.RightNowTime = '0' + parseInt(TotalCountTime / 60).toString() + ':' + '0' + (TotalCountTime % 60).toString()
+    //       } else {
+    //         state.RightNowTime = parseInt(TotalCountTime / 60).toString() + ':' + '0' + (TotalCountTime % 60).toString()
+    //       }
+    //     } else {
+    //       if (MinAdd) {
+    //         state.RightNowTime = '0' + parseInt(TotalCountTime / 60).toString() + ':' + (TotalCountTime % 60).toString()
+    //       } else {
+    //         state.RightNowTime = parseInt(TotalCountTime / 60).toString() + ':' + (TotalCountTime % 60).toString()
+    //       }
+    //     }
+    //     if (TotalCountTime === 0) {
+    //       state.StopToCount = true
+    //     }
+    //   }, 1000)
+    // },
     StopToCount (state) {
       state.StopToCount = true
     },
